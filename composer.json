@@ -1,7 +1,7 @@
 {
   "name": "pavelsterba/advent-of-code",
   "description": "Library and application for better Advent of Code experience.",
-  "type": "project",
+  "type": "library",
   "license": "MIT",
   "autoload": {
     "psr-4": {
