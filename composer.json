@@ -1,0 +1,24 @@
+{
+  "name": "pavelsterba/advent-of-code",
+  "description": "Library and application for better Advent of Code experience.",
+  "type": "project",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "AdventOfCode\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Pavel Štěrba",
+      "email": "email@pavelsterba.com"
+    }
+  ],
+  "require": {
+    "symfony/console": "^6.2",
+    "symfony/dotenv": "^6.2"
+  },
+  "bin": [
+    "bin/aoc"
+  ]
+}
