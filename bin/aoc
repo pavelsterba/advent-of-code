@@ -5,11 +5,19 @@ use AdventOfCode\Command\InputCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Dotenv\Dotenv;
 
-$dotenv = new Dotenv();
-$dotenv->load(__DIR__ . '/../.env');
+$envFile = getcwd() . DIRECTORY_SEPARATOR . '.env';
 
-$application = new Application();
+if (is_readable($envFile)) {
+    $dotenv = new Dotenv();
+    $dotenv->load($envFile);
 
-$application->add(new InputCommand());
+    $application = new Application();
 
-$application->run();
+    $application->add(new InputCommand());
+
+    $application->run();
+} else {
+    echo ".env file not found in " . $envFile . "\n";
+    echo "Create it and add AOC_SESSION with your login session key.\n";
+    exit(1);
+}
