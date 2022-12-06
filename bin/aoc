@@ -1,6 +1,7 @@
 <?php
 require $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 
+use AdventOfCode\Command\DotEnvCommand;
 use AdventOfCode\Command\InputCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Dotenv\Dotenv;
@@ -14,10 +15,11 @@ if (is_readable($envFile)) {
     $application = new Application();
 
     $application->add(new InputCommand());
+    $application->add(new DotEnvCommand());
 
     $application->run();
 } else {
     echo ".env file not found in " . $envFile . "\n";
-    echo "Create it and add AOC_SESSION with your login session key.\n";
+    echo "Create it using \"php vendor" . DIRECTORY_SEPARATOR . "bin" . DIRECTORY_SEPARATOR . "aot dotenv\".\n";
     exit(1);
 }
