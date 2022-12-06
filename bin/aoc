@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
+require $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 
 use AdventOfCode\Command\InputCommand;
 use Symfony\Component\Console\Application;
