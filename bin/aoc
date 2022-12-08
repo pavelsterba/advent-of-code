@@ -3,6 +3,7 @@ require $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 
 use AdventOfCode\Command\DotEnvCommand;
 use AdventOfCode\Command\InputCommand;
+use AdventOfCode\Command\RunCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Dotenv\Dotenv;
 
@@ -16,6 +17,7 @@ if (is_readable($envFile)) {
 
     $application->add(new InputCommand());
     $application->add(new DotEnvCommand());
+    $application->add(new RunCommand());
 
     $application->run();
 } else {

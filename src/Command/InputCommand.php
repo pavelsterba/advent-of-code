@@ -2,6 +2,7 @@
 
 namespace AdventOfCode\Command;
 
+use AdventOfCode\Generator\SolutionGenerator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,6 +19,7 @@ class InputCommand extends Command
         $this->addOption("year", "y", InputOption::VALUE_REQUIRED, "Which year should be downloaded", isset($_ENV["AOC_YEAR"]) ? $_ENV["AOC_YEAR"] : date("Y"));
         $this->addOption("day", "d", InputOption::VALUE_REQUIRED, "Which day should be downloaded", date("j"));
         $this->addOption("output", "o", InputOption::VALUE_NONE, "Print input data");
+        $this->addOption("boilerplate", "b", InputOption::VALUE_NEGATABLE, "Generate boilerplate for solution", true);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -63,6 +65,20 @@ class InputCommand extends Command
 
                 if ($saved !== false) {
                     $output->writeln("<info>Input data successfully downloaded</info>");
+
+                    if ($input->getOption("boilerplate")) {
+                        $generator = new SolutionGenerator($day);
+                        $solutionFile = $dayFolder . DIRECTORY_SEPARATOR . "solution.php";
+                        $saved = @file_put_contents($solutionFile, "<?php\n\n" . $generator->generate());
+
+                        if ($saved === false) {
+                            $output->writeln("<error>Boilerplate for solution cannot be saved</error>");
+                            return Command::FAILURE;
+                        } else {
+                            $output->writeln("<info>Boilerplate for solution created</info>");
+                        }
+                    }
+
                     return Command::SUCCESS;
                 } else {
                     $output->writeln("<error>Input data cannot be saved</error>");

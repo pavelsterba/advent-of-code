@@ -17,7 +17,8 @@
   "require": {
     "symfony/console": "^6.2",
     "symfony/dotenv": "^6.2",
-    "composer-runtime-api": "^2.2"
+    "composer-runtime-api": "^2.2",
+    "nette/php-generator": "^4.0"
   },
   "bin": [
     "bin/aoc"
