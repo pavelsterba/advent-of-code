@@ -15,6 +15,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class InputCommand extends Command
 {
     const INPUT_URL = "https://adventofcode.com/%s/day/%s/input";
+    const INPUT_FILE_NAME = "input.txt";
+    const INPUT_TEST_FILE_NAME = "input-test.txt";
 
     protected function configure(): void
     {
@@ -62,8 +64,11 @@ class InputCommand extends Command
 
             $output->writeln("");
             if ($inputData !== false) {
-                $inputFile = $dayFolder . DIRECTORY_SEPARATOR . "input.txt";
+                $inputFile = $dayFolder . DIRECTORY_SEPARATOR . self::INPUT_FILE_NAME;
+                $inputTestFile = $dayFolder . DIRECTORY_SEPARATOR . self::INPUT_TEST_FILE_NAME;
+
                 $saved = @file_put_contents($inputFile, $inputData);
+                @file_put_contents($inputTestFile, "");
 
                 if ($saved !== false) {
                     $output->writeln("<info>Input data successfully downloaded</info>");

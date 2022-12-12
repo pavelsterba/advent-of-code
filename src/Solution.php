@@ -8,8 +8,8 @@ abstract class Solution
 {
     protected Input $input;
 
-    public function __construct(protected int $day)
+    public function __construct(protected int $day, bool $isTest = false)
     {
-        $this->input = new Input($day);
+        $this->input = new Input($day, $isTest);
     }
 }

@@ -7,13 +7,14 @@ namespace AdventOfCode;
 class Input
 {
     const INPUT_FILE = 'input.txt';
+    const INPUT_TEST_FILE = 'input-test.txt';
 
     private string $inputFile;
 
-    public function __construct(int $day, int $year = null)
+    public function __construct(int $day, bool $isTest = false)
     {
-        $year = $year ?? date('Y');
-        $this->inputFile = getcwd() . DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . 'day-' . $day . DIRECTORY_SEPARATOR . self::INPUT_FILE;
+        $inputFilename = $isTest ? self::INPUT_TEST_FILE : self::INPUT_FILE;
+        $this->inputFile = getcwd() . DIRECTORY_SEPARATOR . date('Y') . DIRECTORY_SEPARATOR . 'day-' . $day . DIRECTORY_SEPARATOR . $inputFilename;
     }
 
     /**

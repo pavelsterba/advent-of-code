@@ -22,6 +22,7 @@ class RunCommand extends Command
         $this->addOption("year", "y", InputOption::VALUE_REQUIRED, "Which year are you solving");
         $this->addOption("first", "f", InputOption::VALUE_NONE, "Run first solution");
         $this->addOption("second", "s", InputOption::VALUE_NONE, "Run second solution");
+        $this->addOption("test", "t", InputOption::VALUE_NONE, "Run on test data");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -30,6 +31,11 @@ class RunCommand extends Command
         $day = $input->getArgument("day");
         $firstOnly = $input->getOption("first");
         $secondOnly = $input->getOption("second");
+        $testMode = $input->getOption("test");
+
+        if ($testMode) {
+            $output->writeln("Running with test data.");
+        }
 
         $solutionFile = getcwd() . DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . "day-" . $day . DIRECTORY_SEPARATOR . "solution.php";
         if (!file_exists($solutionFile)) {
@@ -40,7 +46,7 @@ class RunCommand extends Command
 
         require_once $solutionFile;
 
-        $solution = new Solution(intval($day)); // @phpstan-ignore-line
+        $solution = new Solution(intval($day), $testMode); // @phpstan-ignore-line
 
         if ($firstOnly || (!$firstOnly && !$secondOnly)) { // @phpstan-ignore-line
             try {
