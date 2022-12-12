@@ -20,12 +20,16 @@ class RunCommand extends Command
     {
         $this->addArgument("day", InputArgument::REQUIRED, "Which day to run");
         $this->addOption("year", "y", InputOption::VALUE_REQUIRED, "Which year are you solving");
+        $this->addOption("first", "f", InputOption::VALUE_NONE, "Run first solution");
+        $this->addOption("second", "s", InputOption::VALUE_NONE, "Run second solution");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $year = $input->getOption("year") ?? $_ENV["AOC_YEAR"];
         $day = $input->getArgument("day");
+        $firstOnly = $input->getOption("first");
+        $secondOnly = $input->getOption("second");
 
         $solutionFile = getcwd() . DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . "day-" . $day . DIRECTORY_SEPARATOR . "solution.php";
         if (!file_exists($solutionFile)) {
@@ -36,20 +40,24 @@ class RunCommand extends Command
 
         require_once $solutionFile;
 
-        $solution = new Solution($day); // @phpstan-ignore-line
+        $solution = new Solution(intval($day)); // @phpstan-ignore-line
 
-        try {
-            $first = $solution->first(); // @phpstan-ignore-line
-            $output->writeln("<info>Solution for first task:</info> " . $first);
-        } catch (NotImplementedException) {
-            $output->writeln("<comment>Solution for first task is not implemented yet.");
+        if ($firstOnly || (!$firstOnly && !$secondOnly)) { // @phpstan-ignore-line
+            try {
+                $first = $solution->first(); // @phpstan-ignore-line
+                $output->writeln("<info>Solution for first task:</info> " . $first);
+            } catch (NotImplementedException) {
+                $output->writeln("<comment>Solution for first task is not implemented yet.<comment>");
+            }
         }
 
-        try {
-            $second = $solution->second(); // @phpstan-ignore-line
-            $output->writeln("<info>Solution for second task:</info> " . $second);
-        } catch (NotImplementedException) {
-            $output->writeln("<comment>Solution for second task is not implemented yet.");
+        if ($secondOnly || (!$firstOnly && !$secondOnly)) { // @phpstan-ignore-line
+            try {
+                $second = $solution->second(); // @phpstan-ignore-line
+                $output->writeln("<info>Solution for second task:</info> " . $second);
+            } catch (NotImplementedException) {
+                $output->writeln("<comment>Solution for second task is not implemented yet.</comment>");
+            }
         }
 
         return Command::SUCCESS;
