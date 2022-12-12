@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AdventOfCode\Command;
 
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -13,7 +15,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 #[AsCommand(name: 'dotenv', description: "Generate .env file")]
 class DotEnvCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOption("year", "y", InputOption::VALUE_REQUIRED, "Which year should be added as current");
         $this->addOption("session", "s", InputOption::VALUE_REQUIRED, "Session token for Advent of Code");
@@ -21,6 +23,7 @@ class DotEnvCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
         $helper = $this->getHelper("question");
 
         $envFile = getcwd() . DIRECTORY_SEPARATOR . '.env';
@@ -33,16 +36,16 @@ class DotEnvCommand extends Command
             }
         }
 
-        $year = $input->getOption("year");
+        $year = strval($input->getOption("year"));
         if (!$year) {
             $question = new Question(sprintf("Which year do you want to solve? [<comment>%s</comment>] ", date("Y")), date("Y"));
-            $year = $helper->ask($input, $output, $question);
+            $year = strval($helper->ask($input, $output, $question));
         }
 
-        $session = $input->getOption("session");
+        $session = strval($input->getOption("session"));
         if (!$session) {
             $question = new Question("What is your Advent of Code session cookie value? ", "");
-            $session = $helper->ask($input, $output, $question);
+            $session = strval($helper->ask($input, $output, $question));
         }
 
         if (!$session) {

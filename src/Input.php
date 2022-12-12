@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AdventOfCode;
 
 class Input
 {
     const INPUT_FILE = 'input.txt';
 
-    private $inputFile;
+    private string $inputFile;
 
     public function __construct(int $day, int $year = null)
     {
@@ -14,9 +16,18 @@ class Input
         $this->inputFile = getcwd() . DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . 'day-' . $day . DIRECTORY_SEPARATOR . self::INPUT_FILE;
     }
 
-    public function load(bool $splitLines = true)
+    /**
+     * @return string|array<string>
+     */
+    public function load(bool $splitLines = true): string|array
     {
-        $data = trim(file_get_contents($this->inputFile));
+        $data = @file_get_contents($this->inputFile);
+
+        if ($data !== false) {
+            $data = trim($data);
+        } else {
+            $data = "";
+        }
 
         if ($splitLines) {
             $data = explode("\n", $data);

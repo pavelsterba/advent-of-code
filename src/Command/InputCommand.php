@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AdventOfCode\Command;
 
 use AdventOfCode\Generator\SolutionGenerator;
@@ -14,7 +16,7 @@ class InputCommand extends Command
 {
     const INPUT_URL = "https://adventofcode.com/%s/day/%s/input";
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOption("year", "y", InputOption::VALUE_REQUIRED, "Which year should be downloaded", isset($_ENV["AOC_YEAR"]) ? $_ENV["AOC_YEAR"] : date("Y"));
         $this->addOption("day", "d", InputOption::VALUE_REQUIRED, "Which day should be downloaded", date("j"));
@@ -24,8 +26,8 @@ class InputCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $year = $input->getOption("year");
-        $day = $input->getOption("day");
+        $year = strval($input->getOption("year"));
+        $day = strval($input->getOption("day"));
         $cwd = getcwd();
 
         $options = [
@@ -67,7 +69,7 @@ class InputCommand extends Command
                     $output->writeln("<info>Input data successfully downloaded</info>");
 
                     if ($input->getOption("boilerplate")) {
-                        $generator = new SolutionGenerator($day);
+                        $generator = new SolutionGenerator();
                         $solutionFile = $dayFolder . DIRECTORY_SEPARATOR . "solution.php";
                         $saved = @file_put_contents($solutionFile, "<?php\n\n" . $generator->generate());
 
@@ -89,8 +91,13 @@ class InputCommand extends Command
                 return Command::FAILURE;
             }
         } else {
-            $output->writeln($inputData);
-            return Command::SUCCESS;
+            if ($inputData !== false) {
+                $output->writeln($inputData);
+                return Command::SUCCESS;
+            } else {
+                $output->writeln("<error>Input data cannot be downloaded</error>");
+                return Command::FAILURE;
+            }
         }
     }
 }

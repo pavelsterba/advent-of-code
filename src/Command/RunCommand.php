@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AdventOfCode\Command;
 
 use AdventOfCode\Exception\NotImplementedException;
@@ -14,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'run', description: "Run solution")]
 class RunCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this->addArgument("day", InputArgument::REQUIRED, "Which day to run");
         $this->addOption("year", "y", InputOption::VALUE_REQUIRED, "Which year are you solving");
@@ -34,17 +36,17 @@ class RunCommand extends Command
 
         require_once $solutionFile;
 
-        $solution = new Solution($day);
+        $solution = new Solution($day); // @phpstan-ignore-line
 
         try {
-            $first = $solution->first();
+            $first = $solution->first(); // @phpstan-ignore-line
             $output->writeln("<info>Solution for first task:</info> " . $first);
         } catch (NotImplementedException) {
             $output->writeln("<comment>Solution for first task is not implemented yet.");
         }
 
         try {
-            $second = $solution->second();
+            $second = $solution->second(); // @phpstan-ignore-line
             $output->writeln("<info>Solution for second task:</info> " . $second);
         } catch (NotImplementedException) {
             $output->writeln("<comment>Solution for second task is not implemented yet.");
