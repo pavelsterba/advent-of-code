@@ -36,7 +36,7 @@ class InputCommand extends Command
         $options = [
             'http' => [
                 'method' => "GET",
-                'header' => "Cookie: session=" . $_ENV["AOC_SESSION"],
+                'header' => "User-Agent: https://github.com/pavelsterba/advent-of-code by email@pavelsterba.com\r\nCookie: session=" . $_ENV["AOC_SESSION"],
             ]
         ];
 
