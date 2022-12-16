@@ -55,11 +55,9 @@ Arguments:
 
 Options:
   -y, --year=YEAR                     Which year should be downloaded
-  -o, --output                        Print input data
-  -b, --boilerplate|--no-boilerplate  Generate boilerplate for solution
 ```
 
-Download input data for given day. By default, it also creates boilerplate code for your solutions (more about it later).
+Download input data for given day. It also creates boilerplate code for your solutions (more about it later).
 
 ### run
 
