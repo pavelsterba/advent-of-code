@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 
+use AdventOfCode\Command\AboutCommand;
 use AdventOfCode\Command\DotEnvCommand;
 use AdventOfCode\Command\InputCommand;
 use AdventOfCode\Command\RunCommand;
@@ -18,9 +19,14 @@ if (is_readable($envFile)) {
 
     $application = new Application();
 
+    $about = new AboutCommand();
+
     $application->add(new InputCommand());
     $application->add(new DotEnvCommand());
     $application->add(new RunCommand());
+    $application->add($about);
+
+    $application->setDefaultCommand($about->getName());
 
     $application->run();
 } else {
