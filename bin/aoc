@@ -9,28 +9,44 @@ use AdventOfCode\Command\DotEnvCommand;
 use AdventOfCode\Command\InputCommand;
 use AdventOfCode\Command\RunCommand;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Helper\FormatterHelper;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Dotenv\Dotenv;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 $envFile = getcwd() . DIRECTORY_SEPARATOR . '.env';
+
+$application = new Application();
+
+$about = new AboutCommand();
+$application->add($about);
+$application->setDefaultCommand($about->getName());
+
+$application->add(new DotEnvCommand());
 
 if (is_readable($envFile)) {
     $dotenv = new Dotenv();
     $dotenv->load($envFile);
 
-    $application = new Application();
-
-    $about = new AboutCommand();
-
     $application->add(new InputCommand());
-    $application->add(new DotEnvCommand());
     $application->add(new RunCommand());
-    $application->add($about);
-
-    $application->setDefaultCommand($about->getName());
 
     $application->run();
 } else {
-    echo ".env file not found in " . $envFile . "\n";
-    echo "Create it using \"php vendor" . DIRECTORY_SEPARATOR . "bin" . DIRECTORY_SEPARATOR . "aot dotenv\".\n";
-    exit(1);
+    $input = new ArrayInput([]);
+    $output = new ConsoleOutput();
+    $formatter = new FormatterHelper();
+
+    $message = ".env file not found in " . $envFile;
+    $output->writeln($formatter->formatBlock($message, "bg=red", true));
+
+    $output->writeln("");
+    $output->writeln("Let's create it with <fg=green>dotenv</> command:");
+    $output->writeln("");
+
+    $command = $application->find("dotenv");
+
+    $returnCode = $command->run($input, $output);
+
+    exit($returnCode);
 }
