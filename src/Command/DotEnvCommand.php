@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdventOfCode\Command;
 
+use AdventOfCode\Utils\Printer;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,10 +26,18 @@ class DotEnvCommand extends Command
     {
         /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
         $helper = $this->getHelper("question");
+        /** @var \Symfony\Component\Console\Helper\FormatterHelper $formatter */
+        $formatter = $this->getHelper('formatter');
+        $printer = new Printer($output, $formatter);
+
+        $printer->logo();
+        $year = '$year = ' . date('Y') . ';';
+        $printer->right($year, $printer->getLogoWidth(), 'fg=yellow');
+        $output->writeln("");
 
         $envFile = getcwd() . DIRECTORY_SEPARATOR . '.env';
         if (is_readable($envFile)) {
-            $output->writeln("<comment>.env file already exists.</comment>");
+            $printer->warningLine(".env file already exists");
             $question = new ConfirmationQuestion('Do you want to override it? [<comment>n</comment>] ', false);
 
             if (!$helper->ask($input, $output, $question)) {
