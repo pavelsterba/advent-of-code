@@ -43,6 +43,15 @@ class Printer
         }
     }
 
+    public function right(string $message, int $lineChars, string $style = null): void
+    {
+        if ($style) {
+            $this->output->writeln(sprintf('<%s>%s</>', $style, str_pad($message, $lineChars, " ", STR_PAD_LEFT)));
+        } else {
+            $this->output->writeln(sprintf('%s', str_pad($message, $lineChars, " ", STR_PAD_LEFT)));
+        }
+    }
+
     public function error(string|array $messages): void
     {
         $formattedBlock = $this->formatter->formatBlock($messages, 'bg=red', true);

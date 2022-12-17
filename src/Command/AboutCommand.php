@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdventOfCode\Command;
 
+use AdventOfCode\Utils\Printer;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,25 +15,18 @@ class AboutCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var \Symfony\Component\Console\Helper\FormatterHelper $formatter */
+        $formatter = $this->getHelper('formatter');
+        $printer = new Printer($output, $formatter);
         $commands = [
             "dotenv" => "Generate .env file",
             "input" => "Download input data for puzzle",
             "run" => "Run solution",
         ];
 
-        $logo = [
-            '  __   ____  _  _  ____  __ _  ____     __  ____     ___  __  ____  ____ ',
-            ' / _\ (    \/ )( \(  __)(  ( \(_  _)   /  \(  __)   / __)/  \(    \(  __)',
-            '/    \ ) D (\ \/ / ) _) /    /  )(    (  O )) _)   ( (__(  O )) D ( ) _) ',
-            '\_/\_/(____/ \__/ (____)\_)__) (__)    \__/(__)     \___)\__/(____/(____)            ',
-        ];
-
-        foreach ($logo as $line) {
-            $output->writeln(sprintf("<fg=green>%s</fg=green>", $line));
-        }
-
+        $printer->logo();
         $year = '$year = ' . date('Y') . ';';
-        $output->writeln(sprintf('<fg=yellow>%s</>', str_pad($year, strlen($logo[0]), " ", STR_PAD_LEFT)));
+        $printer->right($year, $printer->getLogoWidth(), 'fg=yellow');
 
         $output->writeln("");
 
