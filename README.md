@@ -55,6 +55,7 @@ Arguments:
 
 Options:
   -y, --year=YEAR                     Which year should be downloaded
+  -f, --force                         Download input without cache
 ```
 
 Download input data for given day. It also creates boilerplate code for your solutions (more about it later).

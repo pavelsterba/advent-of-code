@@ -16,6 +16,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 #[AsCommand(name: 'input', description: "Download input data for puzzle")]
 class InputCommand extends Command
@@ -29,17 +31,20 @@ class InputCommand extends Command
     {
         $this->addArgument("day", InputArgument::REQUIRED, "Which day to download");
         $this->addOption("year", "y", InputOption::VALUE_REQUIRED, "Which year should be downloaded", isset($_ENV["AOC_YEAR"]) ? $_ENV["AOC_YEAR"] : date("Y"));
+        $this->addOption("force", "f", InputOption::VALUE_NONE, "Download input without cache");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $year = strval($input->getOption("year"));
         $day = strval($input->getArgument("day"));
+        $fromCache = true;
         $fs = new Filesystem();
         /** @var \Symfony\Component\Console\Helper\FormatterHelper $formatter */
         $formatter = $this->getHelper('formatter');
         $printer = new Printer($output, $formatter);
         $client = new HttpClient();
+        $cache = new FilesystemAdapter();
 
         $printer->logo();
         $printer->justify('$day = ' . $day . ';', '$year = ' . $year . ';', $printer->getLogoWidth(), 'fg=yellow');
@@ -47,7 +52,22 @@ class InputCommand extends Command
 
         try {
             $url = sprintf(self::INPUT_URL, $year, $day);
-            $inputData = $client->get($url);
+            $key = $year . '_' . $day;
+
+            if ($input->getOption('force')) {
+                $cache->delete($key);
+            }
+
+            $inputData = $cache->get($key, function (ItemInterface $item) use ($client, $url, &$fromCache) {
+                $item->expiresAfter(null);
+                $fromCache = false;
+                return $client->get($url);
+            });
+
+            if ($fromCache) {
+                $printer->warningLine("Input is loaded from cache. Use <fg=gray>--force</> to download it again.", "CACHE");
+                $output->writeln("");
+            }
 
             $dayDir = getcwd() . DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . "day-" . $day;
 

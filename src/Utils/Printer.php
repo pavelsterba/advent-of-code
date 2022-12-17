@@ -57,6 +57,11 @@ class Printer
         $this->output->writeln($formattedBlock);
     }
 
+    public function warningLine(string $message, string $label = "!"): void
+    {
+        $this->output->writeln(sprintf("<bg=yellow>[%s]</> %s", $label, $message));
+    }
+
     public function link(string $url, string $title = null)
     {
         $this->output->writeln(sprintf("<href=%s>%s</>", $url, $title ? $title : $url));
