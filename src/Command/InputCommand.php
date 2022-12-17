@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdventOfCode\Command;
 
 use AdventOfCode\Generator\SolutionGenerator;
+use AdventOfCode\Utils\HttpClient;
 use AdventOfCode\Utils\Printer;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -14,6 +15,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
 #[AsCommand(name: 'input', description: "Download input data for puzzle")]
 class InputCommand extends Command
@@ -37,24 +39,16 @@ class InputCommand extends Command
         /** @var \Symfony\Component\Console\Helper\FormatterHelper $formatter */
         $formatter = $this->getHelper('formatter');
         $printer = new Printer($output, $formatter);
+        $client = new HttpClient();
 
         $printer->logo();
         $printer->justify('$day = ' . $day . ';', '$year = ' . $year . ';', $printer->getLogoWidth(), 'fg=yellow');
         $output->writeln("");
 
-        $options = [
-            'http' => [
-                'method' => "GET",
-                'header' => "User-Agent: https://github.com/pavelsterba/advent-of-code by email@pavelsterba.com\r\nCookie: session=" . $_ENV["AOC_SESSION"],
-            ]
-        ];
+        try {
+            $url = sprintf(self::INPUT_URL, $year, $day);
+            $inputData = $client->get($url);
 
-        $context = stream_context_create($options);
-        $url = sprintf(self::INPUT_URL, $year, $day);
-
-        $inputData = @file_get_contents($url, false, $context);
-
-        if ($inputData !== false) {
             $dayDir = getcwd() . DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . "day-" . $day;
 
             try {
@@ -66,6 +60,7 @@ class InputCommand extends Command
                 ];
 
                 $printer->error($messages);
+                return Command::FAILURE;
             }
 
             $inputFile = $dayDir . DIRECTORY_SEPARATOR . self::INPUT_FILE_NAME;
@@ -91,8 +86,12 @@ class InputCommand extends Command
 
                 $printer->error($messages);
             }
-        } else {
-            $printer->error("Input data cannot be downloaded");
+        } catch (HttpExceptionInterface $e) {
+            $messages = [
+                "Input data cannot be downloaded",
+                sprintf("[%s] %s", $e->getResponse()->getStatusCode(), $e->getResponse()->getInfo()['url']),
+            ];
+            $printer->error($messages);
             return Command::FAILURE;
         }
     }
