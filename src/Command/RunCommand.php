@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdventOfCode\Command;
 
+use AdventOfCode\Utils\Printer;
 use AdventOfCode\Exception\NotImplementedException;
 use Solution;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -33,14 +34,26 @@ class RunCommand extends Command
         $secondOnly = $input->getOption("second");
         $testMode = $input->getOption("test");
 
+        /** @var \Symfony\Component\Console\Helper\FormatterHelper $formatter */
+        $formatter = $this->getHelper('formatter');
+        $printer = new Printer($output, $formatter);
+
+        $printer->logo();
+        $printer->justify('$day = ' . $day . ';', '$year = ' . $year . ';', $printer->getLogoWidth(), 'fg=yellow');
+        $printer->blankLine();
+
         if ($testMode) {
-            $output->writeln("Running with test data.");
+            $printer->warningLine("Running with test data", "TEST");
+            $printer->blankLine();
         }
 
         $solutionFile = getcwd() . DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . "day-" . $day . DIRECTORY_SEPARATOR . "solution.php";
         if (!file_exists($solutionFile)) {
-            $output->writeln("<error>Solution file not found</error>");
-            $output->writeLn($solutionFile);
+            $messages = [
+                "Solution file not found in:",
+                $solutionFile,
+            ];
+            $printer->error($messages);
             return Command::FAILURE;
         }
 

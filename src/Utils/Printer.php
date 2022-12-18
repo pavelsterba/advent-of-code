@@ -71,8 +71,18 @@ class Printer
         $this->output->writeln(sprintf("<bg=yellow>[%s]</> %s", $label, $message));
     }
 
-    public function link(string $url, string $title = null)
+    public function infoLine(string $message, string $label = "i"): void
+    {
+        $this->output->writeln(sprintf("<bg=green>[%s]</> %s", $label, $message));
+    }
+
+    public function link(string $url, string $title = null): void
     {
         $this->output->writeln(sprintf("<href=%s>%s</>", $url, $title ? $title : $url));
+    }
+
+    public function blankLine(): void
+    {
+        $this->output->writeln("");
     }
 }

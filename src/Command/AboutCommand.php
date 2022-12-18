@@ -27,7 +27,6 @@ class AboutCommand extends Command
         $printer->logo();
         $year = '$year = ' . date('Y') . ';';
         $printer->right($year, $printer->getLogoWidth(), 'fg=yellow');
-
         $output->writeln("");
 
         $output->writeln("<fg=yellow>Usage:</>");
