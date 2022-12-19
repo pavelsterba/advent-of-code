@@ -36,4 +36,23 @@ class Input
 
         return $data;
     }
+
+    public function getBlocks(): array
+    {
+        $data = @file_get_contents($this->inputFile);
+        $blockId = 0;
+        $blocks = [];
+
+        if ($data !== false) {
+            foreach (explode("\n\n", trim($data)) as $block) {
+                $blocks[$blockId] = [];
+                foreach (explode("\n", $block) as $line) {
+                    $blocks[$blockId][] = $line;
+                }
+                $blockId++;
+            }
+        }
+
+        return $blocks;
+    }
 }
