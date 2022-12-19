@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace AdventOfCode;
 
+use AdventOfCode\Helper\Block;
+use AdventOfCode\Helper\Text;
+
 class Input
 {
     const INPUT_FILE = 'input.txt';
@@ -45,9 +48,9 @@ class Input
 
         if ($data !== false) {
             foreach (explode("\n\n", trim($data)) as $block) {
-                $blocks[$blockId] = [];
+                $blocks[$blockId] = new Block();
                 foreach (explode("\n", $block) as $line) {
-                    $blocks[$blockId][] = $line;
+                    $blocks[$blockId][] = new Text($line);
                 }
                 $blockId++;
             }
