@@ -30,10 +30,7 @@ class DotEnvCommand extends Command
         $formatter = $this->getHelper('formatter');
         $printer = new Printer($output, $formatter);
 
-        $printer->logo();
-        $year = '$year = ' . date('Y') . ';';
-        $printer->right($year, $printer->getLogoWidth(), 'fg=yellow');
-        $output->writeln("");
+        $printer->header(intval(date('Y')));
 
         $envFile = getcwd() . DIRECTORY_SEPARATOR . '.env';
         if (is_readable($envFile)) {

@@ -27,9 +27,17 @@ class Printer
         }
     }
 
-    public function getLogoWidth(): int
+    public function header(int $year, int $day = null): void
     {
-        return strlen($this->logo[0]);
+        $this->logo();
+
+        if (!$day) {
+            $this->right('$year = ' . $year . ';', strlen($this->logo[0]), 'fg=yellow');
+        } else {
+            $this->justify('$day = ' . $day . ';', '$year = ' . $year . ';', strlen($this->logo[0]), 'fg=yellow');
+        }
+
+        $this->blankLine();
     }
 
     public function justify(string $left, string $right, int $lineChars, string $style = null): void

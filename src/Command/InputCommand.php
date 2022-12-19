@@ -46,9 +46,7 @@ class InputCommand extends Command
         $client = new HttpClient();
         $cache = new FilesystemAdapter();
 
-        $printer->logo();
-        $printer->justify('$day = ' . $day . ';', '$year = ' . $year . ';', $printer->getLogoWidth(), 'fg=yellow');
-        $output->writeln("");
+        $printer->header(intval($year), intval($day));
 
         try {
             $url = sprintf(self::INPUT_URL, $year, $day);

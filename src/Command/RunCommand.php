@@ -38,9 +38,7 @@ class RunCommand extends Command
         $formatter = $this->getHelper('formatter');
         $printer = new Printer($output, $formatter);
 
-        $printer->logo();
-        $printer->justify('$day = ' . $day . ';', '$year = ' . $year . ';', $printer->getLogoWidth(), 'fg=yellow');
-        $printer->blankLine();
+        $printer->header(intval($year), intval($day));
 
         if ($testMode) {
             $printer->warningLine("Running with test data", "TEST");

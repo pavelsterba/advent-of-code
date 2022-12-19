@@ -24,10 +24,7 @@ class AboutCommand extends Command
             "run" => "Run solution",
         ];
 
-        $printer->logo();
-        $year = '$year = ' . date('Y') . ';';
-        $printer->right($year, $printer->getLogoWidth(), 'fg=yellow');
-        $output->writeln("");
+        $printer->header(intval(date('Y')));
 
         $output->writeln("<fg=yellow>Usage:</>");
         $output->writeln("  command [options] [arguments]");
