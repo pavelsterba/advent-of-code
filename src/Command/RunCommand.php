@@ -62,16 +62,24 @@ class RunCommand extends Command
         if ($firstOnly || (!$firstOnly && !$secondOnly)) { // @phpstan-ignore-line
             try {
                 $first = $solution->first(); // @phpstan-ignore-line
-                $output->writeln("<info>Solution for first task:</info> " . $first);
+                if ($first !== null) {
+                    $output->writeln("<info>Solution for first task:</info> " . $first);
+                } else {
+                    $output->writeln("<info>Solution for first task should be in output above.</info>");
+                }
             } catch (NotImplementedException) {
-                $output->writeln("<comment>Solution for first task is not implemented yet.<comment>");
+                $output->writeln("<comment>Solution for first task is not implemented yet.</comment>");
             }
         }
 
         if ($secondOnly || (!$firstOnly && !$secondOnly)) { // @phpstan-ignore-line
             try {
                 $second = $solution->second(); // @phpstan-ignore-line
-                $output->writeln("<info>Solution for second task:</info> " . $second);
+                if ($second !== null) {
+                    $output->writeln("<info>Solution for second task:</info> " . $second);
+                } else {
+                    $output->writeln("<info>Solution for second task should be in output above.</info>");
+                }
             } catch (NotImplementedException) {
                 $output->writeln("<comment>Solution for second task is not implemented yet.</comment>");
             }
